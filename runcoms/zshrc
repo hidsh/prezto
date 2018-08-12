@@ -10,4 +10,38 @@ if [[ -s "${ZDOTDIR:-$HOME}/.zprezto/init.zsh" ]]; then
   source "${ZDOTDIR:-$HOME}/.zprezto/init.zsh"
 fi
 
+# プロンプト
+# master	branch
+# ↑		pushしてないコミットあり
+# *			add していないファイルあり
+# x			
+# +			コミットしていないファイルあり
+# ■		git 管理外のファイルあり	
+# →		
+
 # Customize to your needs...
+
+# represent file path in title bar
+precmd() {eval 'echo -ne "\033]0;${PWD/#$HOME/~}\007"'}
+
+# my zip command
+# zip DIR-NAME
+function zzip () {
+    dir=$1
+    d=`echo $dir | sed -e 's/\/$//'`
+    \zip -r $d.zip $d
+    if [ "$?" -eq 0 ]; then
+        echo
+        echo -n "  Zipped to: "
+        ls -d $PWD/{*,.*} | grep $d.zip
+    fi
+}
+alias zip=zzip
+
+# command alias
+# (to invoke original command, use "\command")
+#
+alias emacs='/usr/local/Cellar/emacs-mac/emacs-26.1-z-mac-7.1/bin/emacs-26.1'
+alias rm='~/bin/trash'
+
+PATH=$PATH:$HOME/bin      # my script or tools
