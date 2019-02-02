@@ -21,6 +21,20 @@ fi
 
 # Customize to your needs...
 
+# gtags
+# export GTAGSLIBPATH=/usr/include
+
+# for qmk_firmware
+export GTAGSLIBPATH=/usr/local/Cellar/avr-gcc/7.3.0/avr/include
+# :/usr/local/Cellar/avr-gcc/7.3.0/avr/include/sys\
+# :/usr/local/Cellar/avr-gcc/7.3.0/avr/include/avr\
+# :/usr/local/Cellar/avr-gcc/7.3.0/avr/include/util\
+
+# editor
+export EDITOR='vim'
+export VISUAL='vim'
+export PAGER='less'
+
 # represent file path in title bar
 precmd() {eval 'echo -ne "\033]0;${PWD/#$HOME/~}\007"'}
 
@@ -41,7 +55,61 @@ alias zip=zzip
 # command alias
 # (to invoke original command, use "\command")
 #
-alias emacs='/usr/local/Cellar/emacs-mac/emacs-26.1-z-mac-7.1/bin/emacs-26.1'
+alias emacs='/usr/local/Cellar/emacs-mac/emacs-26.1-z-mac-7.4/bin/emacs-26.1'
 alias rm='~/bin/trash'
 
+# buffer clear on iTerm2
+alias cls='printf "\e]50;ClearScrollback\a"'
+
 PATH=$PATH:$HOME/bin      # my script or tools
+
+# # zaw
+# source /Users/g/git-clone/zaw/zaw.zsh
+
+# autoload -Uz chpwd_recent_dirs cdr add-zsh-hook is-at-least
+# if is-at-least 4.3.10; then
+# add-zsh-hook chpwd chpwd_recent_dirs
+# zstyle ':chpwd:*' recent-dirs-max 5000
+# zstyle ':chpwd:*' recent-dirs-default yes
+# fi
+
+# zstyle ':filter-select' case-insensitive yes
+# bindkey '^xb'  zaw-cdr
+# bindkey '^x^r' zaw-history
+
+
+# # history by peco
+# function peco-history-selection() {
+#     # BUFFER=`history -n 1 | tail -r  | awk '!a[$0]++' | peco`
+#     BUFFER=`history -n 1 | tail -r  | awk '!a[$0]++' | fzy`
+#     CURSOR=$#BUFFER
+#     zle reset-prompt
+# }
+
+# zle -N peco-history-selection
+# bindkey '^r' peco-history-selection
+
+function history-fzy() {
+  BUFFER=$(history | sort -r -k 1,2 | awk '!a[$0]++{$1=""; print}' | fzy --query "$LBUFFER")
+  CURSOR=$#BUFFER
+
+  zle reset-prompt
+}
+
+zle -N history-fzy
+bindkey '^r' history-fzy
+
+
+
+# docker completion
+if [ -e ~/.zsh/completions ]; then
+  fpath=(~/.zsh/completions $fpath)
+fi
+
+autoload -U compinit
+compinit
+
+
+# heroku autocomplete setup
+HEROKU_AC_ZSH_SETUP_PATH=/Users/g/Library/Caches/heroku/autocomplete/zsh_setup && test -f $HEROKU_AC_ZSH_SETUP_PATH && source $HEROKU_AC_ZSH_SETUP_PATH;export PATH="/usr/local/opt/icu4c/bin:$PATH"
+export PATH="/usr/local/opt/icu4c/sbin:$PATH"
