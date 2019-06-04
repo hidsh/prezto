@@ -99,12 +99,19 @@ function history-fzy() {
 zle -N history-fzy
 bindkey '^r' history-fzy
 
+# git-escape-magic
+# https://github.com/knu/zsh-git-escape-magic
+autoload -Uz git-escape-magic
+git-escape-magic
 
 
 # docker completion
 if [ -e ~/.zsh/completions ]; then
   fpath=(~/.zsh/completions $fpath)
 fi
+
+alias dps='docker ps --format "{{.ID}}\t{{.Image}}\t{{.Status}}\t{{.Command}}\t{{.RunningFor}}"'
+alias dc='docker exec -it `dps | fzy | cut -f 1` /bin/bash'
 
 autoload -U compinit
 compinit
