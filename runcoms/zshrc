@@ -89,15 +89,21 @@ PATH=$PATH:$HOME/bin      # my script or tools
 # zle -N peco-history-selection
 # bindkey '^r' peco-history-selection
 
-function history-fzy() {
+function fzy-history() {
   BUFFER=$(history | sort -r -k 1,2 | awk '!a[$0]++{$1=""; print}' | fzy --query "$LBUFFER")
   CURSOR=$#BUFFER
 
   zle reset-prompt
 }
 
-zle -N history-fzy
-bindkey '^r' history-fzy
+zle -N fzy-history
+bindkey '^r' fzy-history
+
+# fzy-git-hash
+function fzy-git-hash() {
+        git gr | fzy | sed -e "s/^[\*\|][ |\\\/\*]*//g" | awk '{ print $1 }'
+}
+alias -g C='$(fzy-git-hash)'
 
 # git-escape-magic
 # https://github.com/knu/zsh-git-escape-magic
