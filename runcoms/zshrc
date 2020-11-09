@@ -104,22 +104,37 @@ rga-fzf() {
 # zle -N peco-history-selection
 # bindkey '^r' peco-history-selection
 
-function history-fzy() {
+function fzy-history() {
   BUFFER=$(history | sort -r -k 1,2 | awk '!a[$0]++{$1=""; print}' | fzy --query "$LBUFFER")
   CURSOR=$#BUFFER
 
   zle reset-prompt
 }
 
-zle -N history-fzy
-bindkey '^r' history-fzy
+zle -N fzy-history
+bindkey '^r' fzy-history
 
+# fzy-git-hash
+function fzy-git-hash() {
+        git gr | fzy | sed -e "s/^[\*\|][ |\\\/\*]*//g" | awk '{ print $1 }'
+}
+alias -g C='$(fzy-git-hash)'
 
+# git-escape-magic
+# https://github.com/knu/zsh-git-escape-magic
+autoload -Uz git-escape-magic
+git-escape-magic
+
+# enhancd
+source ~/git-clone/enhancd/init.sh
 
 # docker completion
 if [ -e ~/.zsh/completions ]; then
   fpath=(~/.zsh/completions $fpath)
 fi
+
+alias dps='docker ps --format "{{.ID}}\t{{.Image}}\t{{.Status}}\t{{.Command}}\t{{.RunningFor}}"'
+alias dc='docker exec -it `dps | fzy | cut -f 1` /bin/bash'
 
 autoload -U compinit
 compinit
